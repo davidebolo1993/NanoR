@@ -1,0 +1,278 @@
+
+############################################ FastqFilterG ############################################
+
+#' @title Filter .fastq files outputted by GridION X5
+#' @description Use this function if you have .fastq and sequencing summary files and you want to filter your .fastq files in order to obtain only the passed ones. In addition, you can ask to FastqFilterG to return the total .fastq file, the total .fasta file and the .fasta file for high-quality sequences. 
+#' @param Data Path to .fastq and sequencing summary files returned from GridION X5 (can find .fastq and sequencing summary files recursively)
+#' @param DataOut Where the .fastq file for reas with quality greater (or equal) to 7 will be saved (and, if you wish the .fasta file for high-quality reads, the total .fastq file and the .fasta file) will be saved
+#' @param FASTQTOT Logical; do you want to produce a .fa stq file that is the result of the concatenation of all .fastq files returned by GridION X5?
+#' @param FASTA Logical; do you want to produce a pass .fasta file and, if FASTQTOT = TRUE, a total .fasta file?
+#' @param Cores Number of cores to use to accelerate sequencing summary files reading
+#' @param Label A label that will be used, together with the Flow Cell identifier extracted from the inputted data, to identify the experiment
+#' @return By default, .fastq file of reads with quality greater (or equal) than 7. As FastqFilterG reads each .fastq file when creating its output, if one .fastq file is "ill-formatted", FastqFilterG will stop and print the number of the "guilty" .fastq file.
+#' @examples
+#' #do not run
+#' DataPath<-"/data/basecalled/ExperimentName/FlowCellId"
+#' FastqFilterG(Data=DataPath, DataOut="Path/To/DataOut",FASTQTOT=FALSE,FASTA=FALSE) #avoid re-running on errors: ill-formatted .fastq files are found sometimes.
+
+
+FastqFilterG<-function(Data,DataOut,FASTQTOT=FALSE,FASTA=FALSE,Cores=1,Label) {
+  
+  library(ShortRead)
+
+  Label<-as.character(Label)
+  
+  FastqFiles<-list.files(Data,pattern=".fastq",full.names=TRUE, recursive=TRUE)
+  FastqFilesPathOrdered<-FastqFiles[order(as.numeric(gsub("[^0-9]+", "", FastqFiles)))]
+  
+  
+  SummariesFiles<-list.files(Data,full.names=TRUE,pattern="sequencing_summary", recursive=TRUE)
+  SummariesFilesOrdered<-SummariesFiles[order(as.numeric(gsub("[^0-9]+", "", SummariesFiles)))]
+  
+  Minimal_Read_Table_Summary<-function(i,File) {
+    Table<-read.table(File[i],header=FALSE,sep="\t",skip=1)
+    Flowcell_ID_Label<-unlist(strsplit(as.character(Table[,1]),"_"))[4]
+    Flowcell_ID<-rep(Flowcell_ID_Label,dim(Table)[1])
+    Read_Id<-as.character(Table[,2])
+    Qscore<-as.numeric(Table[,12])
+    Table<-cbind(Flowcell_ID,Read_Id,Qscore)
+    return(Table)
+  }
+  
+  
+  cl <- makeCluster(as.numeric(Cores)) 
+  clusterExport(cl, c("Minimal_Read_Table_Summary","SummariesFilesOrdered"),envir=environment())
+  List<-parLapply(cl, c(1:length(SummariesFilesOrdered)),Minimal_Read_Table_Summary,SummariesFilesOrdered)
+  stopCluster(cl)
+  
+  SummaryTable<-do.call(rbind,List)
+  
+  Directory<-file.path(DataOut)
+  dir.create(Directory, showWarnings=FALSE)
+  
+  
+  TablePass<-which(as.numeric(SummaryTable[,3]) >= 7)
+  PassTable<-Table[TablePass,]
+  IdPass<-as.character(PassTable[,2])
+  Flowcell_ID_Label<-as.character(Table[1,1])
+  if (Flowcell_ID_Label == "GA10000") {
+    Flowcell_ID_Label<-as.character("FC1")
+  }
+  if (Flowcell_ID_Label == "GA20000") {
+    Flowcell_ID_Label<-as.character("FC2")
+  }
+  if (Flowcell_ID_Label == "GA30000") {
+    Flowcell_ID_Label<-as.character("FC3")
+  }
+  if (Flowcell_ID_Label == "GA40000") {
+    Flowcell_ID_Label<-as.character("FC4")
+  }
+  if (Flowcell_ID_Label == "GA50000") {
+    Flowcell_ID_Label<-as.character("FC5")
+  }
+  
+  message("Starting .fastq files analysis...")
+  
+  for(i in 1:length(FastqFilesPathOrdered)) {
+    
+    fqFile<-FastqFile(FastqFilesPathOrdered[i])
+    BuildTotalFastq<-tryCatch({
+      readFastq(fqFile)},
+      error = function(cond) {
+        return(NULL)},
+      warning = function(cond) {
+        message(cond)
+        return(NULL)}
+    )
+    if (is.null(BuildTotalFastq)) {
+      stop(paste0("Ill-formatted .fastq file at fastq ",i, "! Can't write .fastq information. This error occurs when a .fastq file is not formatted correctly."))
+    }
+    else {
+      if (FASTQTOT == TRUE) {
+        if (i == 1) {
+          message("Start writing total .fastq file...")
+        }
+        writeFastq(BuildTotalFastq, file.path(Directory,paste0(Label,"_",Flowcell_ID_Label,"_FastqTot.fastq")), mode="a", compress=FALSE)
+        if (FASTA == TRUE) {
+          if (i == 1) {
+            
+            message("Start writing total .fasta file...")
+          }  
+          
+          writeFasta(BuildTotalFastq,file.path(Directory,paste0(Label,"_",Flowcell_ID_Label,"_FastaTot.fastq")), mode="a", compress=FALSE)
+        }
+      }
+      Id<-id(BuildTotalFastq)
+      CharId<-as.character(Id)
+      NewReadsSplitted<-unlist(strsplit(CharId," "))
+      IdNames<-NewReadsSplitted[seq(1,length(NewReadsSplitted),8)]
+      close(fqFile)
+      Matches<-match(IdNames,IdPass,nomatch=-10)
+      MatchesNew<-which(Matches != -10)
+      ReadsPassed<-BuildTotalFastq[MatchesNew]
+      if (i == 1){
+        message("Start writing high-quality .fastq file...")
+      }
+      writeFastq(ReadsPassed,file=file.path(Directory, paste0(Label,"_",Flowcell_ID_Label,"_PassFastq.fastq")),compress=FALSE,mode="a")
+      if (FASTA==TRUE) {
+        if (i == 1) {
+          message("Start writing high-quality .fasta file...")
+        }
+        writeFasta(ReadsPassed,file=file.path(Directory, paste0(Label,"_",Flowcell_ID_Label,"_PassFasta.fasta")),compress=FALSE,mode="a")
+      }
+    }
+  }
+  message("Done!")
+}
+
+
+############################################ NanoFastqG ############################################
+
+#' @title Extracts .fastq informations from your GridION X5  basecalled "Pass" .fast5 files
+#' @description NanoFastqG returns a file text containing .fastq sequences (and, if you want, an additional file text containing .fasta sequences) extracted from your "Pass" .fast5 reads.
+#' @param DataPass Path to "Pass" .fast5 files folder (can find .fast5 files recursively)
+#' @param DataOut Where your .fastq (and .fasta) file will be saved
+#' @param Label A lable used to identify .fastq (and .fasta) file outputted
+#' @param Cores Number of cores to be used: 1 by default
+#' @param FASTA Logical. If FALSE (by default), return only .fastq file else, if TRUE, return both .fastq and .fasta files
+#' @return .fastq file and, if you wish, .fasta file for your "Pass" .fast5 files.
+#' @examples
+#' #do not run
+#' NanoFastqG(DataPass="Path/To/DataPass", DataOut="/Path/To/DataOutExp", Cores=6, FASTA=FALSE)
+#' NanoFastqG(DataPass="Path/To/DataPass", DataOut="/Path/To/DataOutExp", Cores=6, FASTA=TRUE)
+
+
+NanoFastqG<-function(DataPass,DataOut,Label,Cores=1,FASTA=FALSE) {
+  
+  library(rhdf5)
+  library(parallel)
+  library(ShortRead)
+  
+  Directory<-file.path(DataOut)
+  dir.create(Directory,showWarnings=FALSE)
+  setwd(Directory)
+  
+  label<-as.character(Label)
+  PassFiles<-list.files(DataPass, full.names=TRUE, recursive = TRUE, pattern=".fast5")
+  
+  
+  ### FUNCTIONS ###
+ 
+  Read_DataSet<-function(File, PathGroup) { 
+    h5errorHandling(type="suppress")
+    Data1<-H5Dopen(File, PathGroup) 
+    Data2<-H5Dread(Data1)
+    H5Dclose(Data1)
+    return(Data2) 
+  }
+  
+  Read_Attributes<-function(PathGroup, Attribute) { 
+    h5errorHandling(type="suppress")
+
+    Data1<-H5Aopen(PathGroup, Attribute)
+    Data2<-H5Aread(Data1)
+    H5Aclose(Data1)
+    return(Data2) 
+  } 
+  
+  Fastq_Extraction<-function(i,File) {
+    
+    
+    Fastq<-list()
+    
+    h5errorHandling(type="suppress")
+    File<-H5Fopen(File[i])
+    
+    GroupTry<-"/Analyses/Basecall_1D_000/BaseCalled_template/Fastq"
+    
+    Try<-try(Read_DataSet(File,GroupTry), silent=TRUE) #exclude not-basecalled .fast5 files
+    
+    if (inherits(Try,"try-error")) {
+      H5Fclose(File)
+      Fastq[[i]]<-NA
+      return(Fastq[[i]])
+    }
+    
+    else {
+      
+      Group0<-"/Analyses/Basecall_1D_000/Summary/basecall_1d_template"
+      Score<-H5Gopen(File,Group0)
+      Quality<-Read_Attributes(Score,"mean_qscore")
+      H5Gclose(Score)
+      
+      if (Quality >= 7) { 
+        Pre_Fastq<-Read_DataSet(File,GroupTry)
+        Fastq[[i]]<- strsplit(Pre_Fastq,split="\n",fixed=TRUE)[[1]]
+      }
+      
+      else
+      {
+        Fastq[[i]]<-NA
+      }
+      H5Fclose(File)
+      return(Fastq[[i]])
+    }
+  }
+
+  ###### EXTRACT GRIDION LABEL #####
+  
+  FileOpen<-H5Fopen(PassFiles[1])
+  Group4.2<-"/UniqueGlobalKey/tracking_id"
+  Lab<-H5Gopen(FileOpen,Group4.2)
+  Flowcell_ID_Label<-Read_Attributes(Lab, "device_id")
+  H5Gclose(Lab)
+  H5Fclose(FileOpen)
+
+  if (Flowcell_ID_Label == "GA10000") {
+    Flowcell_ID_Label<-as.character("FC1")
+  }
+  if (Flowcell_ID_Label == "GA20000") {
+    Flowcell_ID_Label<-as.character("FC2")
+  }
+  if (Flowcell_ID_Label == "GA30000") {
+    Flowcell_ID_Label<-as.character("FC3")
+  }
+  if (Flowcell_ID_Label == "GA40000") {
+    Flowcell_ID_Label<-as.character("FC4")
+  }
+  if (Flowcell_ID_Label == "GA50000") {
+    Flowcell_ID_Label<-as.character("FC5")
+  }
+
+  ################################
+  
+  
+  if (FASTA == FALSE) {
+    message("Starting .fastq sequences extraction!")
+  }
+  else {
+    message("Starting .fastq sequences and .fasta sequences extraction!")
+  }
+  
+  cl <- makeCluster(as.numeric(Cores)) 
+  clusterExport(cl, c("Fastq_Extraction","PassFiles","Read_DataSet","Read_Attributes"),envir=environment())
+  clusterEvalQ(cl,library(rhdf5))
+  List<-parLapply(cl, c(1:length(PassFiles)),Fastq_Extraction,PassFiles)
+  stopCluster(cl)
+  FastqTot<-do.call(c,List)
+  FastqClean<-which(is.na(FastqTot) == FALSE)
+  FastqFinal<-(FastqTot[FastqClean])
+  message("Writing .fastq file!")
+  fileConn<-file(paste0(label,"_",Flowcell_ID_Label,".fastq"))
+  writeLines(FastqFinal,fileConn)
+  close(fileConn)
+
+  if (FASTA == TRUE) {
+    message("Writing .fasta file!")
+    Fastq = FastqStreamer(file.path(Directory,paste0(label,"_",Flowcell_ID_Label,".fastq")))
+    repeat {
+      Fasta = yield(Fastq)
+      if (length(Fasta) == 0) break
+      writeFasta(Fasta, file=file.path(Directory,paste0(label,"_",Flowcell_ID_Label,".fasta")), mode="a")
+    }
+  }
+
+  message("Done!") 
+}
+
+
