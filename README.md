@@ -187,7 +187,7 @@ NanoFastqG(DataPass="/Path/To/PassedFast5Files",DataOut="/Path/To/DataOut",Label
 
 ![alt text](Plots/Activity.png)
 
-**Passed and Failed/Skipped, GC content**
+**Passed and Failed/Skipped reads, GC content**
 
 ![alt text](Plots/PFGC.png)
 
