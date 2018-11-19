@@ -96,7 +96,7 @@ Use NanoR on the complete set of .fast5 files you obtain from Nanopore MinION/Gr
 
 You can access all the informations on how to run functions from NanoR within R, using the following commands:
 
-MinION data Analysis
+MinION data analysis
 
 ```R
 
@@ -110,7 +110,7 @@ MinION data Analysis
 
 ```
 
-GridION X5 data Analysis
+GridION X5 data analysis
 
 ```R
 
@@ -137,7 +137,7 @@ Comparing experiments
 
 Here is an example of how you run the aforementioned commands:
 
-### MinION data Analysis
+### MinION data analysis
 
 ```R
 
@@ -151,7 +151,7 @@ NanoFastqM(DataPass="/Path/To/PassedFast5Files",DataOut="/Path/To/DataOut",Label
 
 If working with folders containing passed, failed and skipped .fast5 files together, give this folder to the "DataPass" parameter of NanoPrepareM and NanoFastqM: NanoR will automatically filter out the low-quality sequences
 
-### GridION X5 data Analysis (if working with sequencing summary and .fastq files)
+### GridION X5 data analysis (if working with sequencing summary and .fastq files)
 
 ```R
 
@@ -162,7 +162,7 @@ FastqFilterG(Data="/data/basecalled/ExperimentName/FlowCellId",DataOut="/Path/To
 
 ```
 
-### GridION X5 data Analysis (if working with basecalled .fast5 files, the pipeline is equal to the one used for MinION data)
+### GridION X5 data analysis (if working with basecalled .fast5 files, the pipeline is equal to the one used for MinION data)
 
 ```R
 
