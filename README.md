@@ -135,7 +135,7 @@ Comparing experiments
 ```
 
 
-Here is an example of how you run the aforementioned commands:
+Here is an example of how to run the aforementioned commands:
 
 ### MinION data analysis
 
