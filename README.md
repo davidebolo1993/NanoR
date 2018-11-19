@@ -61,7 +61,7 @@ options(defaultPackages=c(getOption("defaultPackages"),"parallel","grid"))
 ```
 
 After that, save your new .Rprofile (or Rprofile.site) file and re-run R.
-In order to install NanoR, run, you have to download the .tar.gz file from this repository using git:
+In order to install NanoR, you have to download the .tar.gz file from this repository using git:
 
 ```sh
 
@@ -77,7 +77,7 @@ git clone git://github.com/davidebolo1993/NanoR.git
 
 ```
 
-Than, from your R console:
+Then, from your R console:
 
 ```R
 
