@@ -94,7 +94,7 @@ NanoPrepareG<-function(BasecalledFast5=FALSE,Data,DataFail=NA,DataSkip=NA,Cores=
     }
     else {
       DataSkip_Length<-length(list.files(DataSkip,recursive=TRUE,full.names=TRUE,pattern=".fast5"))
-      message("Found ",length(SkippedData), " skipped .fast5 files in folder!")
+      message("Found ",DataSkip_Length, " skipped .fast5 files in folder!")
     }
     label<-as.character(Label)
     message("Done!")
