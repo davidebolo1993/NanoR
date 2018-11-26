@@ -127,7 +127,7 @@ GridION X5 data analysis
 
 ```
 
-Compare experiments
+Comparison between experiments
 
 ```R
 
