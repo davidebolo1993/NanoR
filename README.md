@@ -164,8 +164,11 @@ If working with folders containing passed, failed and skipped .fast5 files toget
 ```R
 
 List<-NanoPrepareG(BasecalledFast5=FALSE,Data="/data/basecalled/ExperimentName/FlowCellId",DataSkip="/data/reads/[FlowCellId]/[ExperimentId]/fast5/",Cores=6, Label="Exp") # prepare data. Dataskip can be omitted
+
 Table<-NanoTableG(NanoPrepareGList=List,DataOut="/Path/To/DataOut",GCC=TRUE) # extract metadata: if encounter problems with GC content, set GCC to FALSE
+
 NanoStatsG(NanoPrepareGList=List,NanoGTable=Table,DataOut="Path/To/DataOut") #plot statistics
+
 FastqFilterG(Data="/data/basecalled/ExperimentName/FlowCellId",DataOut="/Path/To/DataOut",FASTQTOT=FALSE,FASTA=TRUE,Cores=6,Label="Exp") # filter .fastq files. You can return a concatenated .fastq file too setting the "FASTQTOT" parameter to TRUE
 
 ```
