@@ -6,7 +6,7 @@ NanoR is a package for the statistical language and environment R, tested on Uni
 
 ## Background
 
-NanoR was developed under RStudio with R 3.1.3 and tested on Unix, MacOSX and Windows using:
+NanoR was developed under R 3.1.3 and tested on Unix, MacOSX and Windows using:
 
 - MinKNOW-basecalled MinION .fast5 data obtained using R9.4 and R9.5 MinION Flow Cells
 - Albacore-basecalled MinION .fast5 data obtained using R9.4 and R9.5 MinION Flow Cells
