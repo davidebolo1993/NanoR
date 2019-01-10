@@ -87,7 +87,7 @@ install.packages("/Path/To/NanoR.tar.gz", repos=NULL)
 
 If you're using NanoR on Windows, be sure to specify paths using the following format, in order to avoid problems with "escape characters":
 
-_"C:\\Path\\To\\Data"_
+_"C:\\\Path\\\To\\\Data"_
 
 Use NanoR on the complete set of .fast5 files you obtain from Nanopore MinION/GridION X5 in order to obtain significant statistics. A small sample dataset (approximately 2GB) of MinION .fast5 files on which NanoR can be tested is available to be downloaded at _https://sourceforge.net/projects/nanor/files/NanoR_v_1.0/SampleFast5.zip/download_
 
