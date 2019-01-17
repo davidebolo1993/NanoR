@@ -77,6 +77,9 @@ git clone git://github.com/davidebolo1993/NanoR.git
 
 ```
 
+The previous command will clone in your folder the last release of NanoR (current, NanoR v1.0): check the releases to download R .tar.gz for previous versions. 
+
+
 Then, from your R console:
 
 ```R
