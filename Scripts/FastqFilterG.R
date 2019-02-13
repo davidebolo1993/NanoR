@@ -105,7 +105,7 @@ FastqFilterG<-function(Data,DataOut,FASTQTOT=FALSE,FASTA=FALSE,Cores=1,Label) {
       Id<-id(BuildTotalFastq)
       CharId<-as.character(Id)
       NewReadsSplitted<-unlist(strsplit(CharId," "))
-      IdNames<-NewReadsSplitted[seq(1,length(NewReadsSplitted),8)]
+      IdNames<-NewReadsSplitted[seq(1,length(NewReadsSplitted),6)]
       close(fqFile)
       Matches<-match(IdNames,IdPass,nomatch=-10)
       MatchesNew<-which(Matches != -10)
