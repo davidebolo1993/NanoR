@@ -8,6 +8,9 @@ NanoR on bioRxiv: 'NanoR: An user-friendly R package to analyze and compare nano
 
 NanoR is submitted to a scientific journal.
 
+NanoR is frequently updated in its first release, so be sure to download the most recent tar.gz !!!
+
+
 ## Background
 
 NanoR was developed under R 3.1.3 and tested on Unix, MacOSX and Windows using:
