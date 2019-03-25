@@ -2,24 +2,28 @@
 
 ![alt text](NanoR.png)
 
-NanoR is a package for the statistical language and environment R, tested on Unix, MacOSX and Windows, that allows user-friendly analysis and comparison of 1D MinION and GridION X5 sequencing data within acceptable time frames.
+NanoR is an up-to-date package for the statistical language and environment R, tested on Unix, MacOSX and Windows, that allows user-friendly analysis and comparison of 1D MinION and GridION X5 sequencing data within acceptable time frames.
 
 NanoR on bioRxiv: 'NanoR: An user-friendly R package to analyze and compare nanopore sequencing data' (doi: https://doi.org/10.1101/514232).
 
 NanoR is submitted to a scientific journal.
 
-NanoR is frequently updated in its first release, so be sure to download the most recent tar.gz !!!
-## BIG UPDATE WITH MULTI-READ .FAST5 FILE SUPPORT READY ! IT WILL BE PUBLISHED AFTER NANOR REVISION.
+##### NanoR v 2.0 is out !
+
+Added support for multi-read .fast5 files
+Changed graphics design: NanoR goes minimal !
+Plotting is now faster
+NanoCompare is now faster (and histograms are not plotted anymore)
+The "M" version of NanoR now supports analysis of basecalled .fast5 files for MinION and GridION while the "G" version now supports analysis of sequencing summaries and .fastq files
+Added the possibility to extract/filter .fastq files on quality
+Added the possibility to store tables behind ggplot2-plots (easier to hack colors ;))
+Removed seqinr dependency
 
 
 ## Background
 
-NanoR was developed under R 3.1.3 and tested on Unix, MacOSX and Windows using:
+NanoR was developed under R 3.1.3 and tested on Unix, MacOSX and Windows. It supports all the releases of MinION and GridION X5 instruments (and their output, of course !)
 
-- MinKNOW-basecalled MinION .fast5 data obtained using R9.4 and R9.5 MinION Flow Cells
-- Albacore-basecalled MinION .fast5 data obtained using R9.4 and R9.5 MinION Flow Cells
-- Sequencing summary .txt and .fastq files returned by GridION X5 using R9.4 MinION Flow Cells
-- Albacore-basecalled GridION X5 .fast5 data obtained from GridION X5 using R9.4 MinION Flow Cells
 
 NanoR depends on the following R packages:
 
@@ -27,7 +31,6 @@ NanoR depends on the following R packages:
 - reshape2 (v 1.4.3)
 - RColorBrewer (v 1.1.2)
 - scales (v 0.5.0)
-- seqinr (v 3.4.5)
 - gridExtra (v 2.3)
 - rhdf5 (v 2.14)
 - ShortRead (v 1.24.0)
@@ -42,7 +45,7 @@ In order to install the needed packages, you can copy, paste and run the followi
 
 ```R
 
-install.packages(c("ggplot2","reshape2","RColorBrewer","scales","seqinr","gridExtra"), repos= "http://cran.cnr.berkeley.edu/")
+install.packages(c("ggplot2","reshape2","RColorBrewer","scales","gridExtra"), repos= "http://cran.cnr.berkeley.edu/")
  
 source("http://bioconductor.org/biocLite.R")
 
@@ -85,7 +88,7 @@ git clone git://github.com/davidebolo1993/NanoR.git
 
 ```
 
-The previous command will clone in your folder the last release of NanoR (current, NanoR v1.0): check the releases to download R .tar.gz for previous versions. 
+The previous command will clone in your folder the last release of NanoR (current, NanoR v2.0): check the releases to download R .tar.gz for previous versions. 
 
 
 Then, from your R console:
@@ -134,8 +137,6 @@ GridION X5 data analysis
 
 ?NanoFastqG
 
-?FastqFilterG
-
 ```
 
 Comparison between experiments
@@ -151,18 +152,19 @@ Here is an example of how to run the aforementioned commands:
 
 
 
-### MinION data analysis
+### MinION and GridION X5 basecalled .fast5 files, single/multi-read
 
 ```R
 
 
-List<-NanoPrepareM(DataPass="/Path/To/PassedFast5Files",DataFail=NA,DataSkip=NA,Label="Exp") # prepare data
+List<-NanoPrepareM(DataPass="/Path/To/PassedFast5Files",DataFail=NA,DataSkip=NA,Label="Exp", MultiRead=FALSE) # prepare data. To allow multi-read .fast5 files support simply switch MultiRead to TRUE
 
-Table<-NanoTableM(NanoPrepareMList=List,DataOut="/Path/To/DataOut",Cores=6,GCC=TRUE) # extract metadata. You can set "GCC" parameter to FALSE to skip GC content computation.
+Table<-NanoTableM(NanoPrepareMList=List,DataOut="/Path/To/DataOut",Cores=6,GCC=FALSE) # extract metadata. To allow GC content computation, switch GCC to TRUE
 
-NanoStatsM(NanoPrepareMList=List,NanoMTable=Table,DataOut="/Path/To/DataOut") # plot statistics
+NanoStatsM(NanoPrepareMList=List,NanoMTable=Table,DataOut="/Path/To/DataOut", KeepGGObj = FALSE) #plot statistics. To store table behind ggplot2-plots, switch KeepGGObj to TRUE
 
-NanoFastqM(DataPass="/Path/To/PassedFast5Files",DataOut="/Path/To/DataOut",Label="Exp",Cores=6,FASTA=FALSE) # extract .fastq but, in this case, not .fasta information from .fast5 files. You can set "FASTA" parameter to TRUE.
+NanoFastqM(DataPass="/Path/To/PassedFast5Files",DataOut="/Path/To/DataOut",Label="Exp",Cores=6,FASTA=FALSE, Minquality=7, MultiRead=FALSE) # extract .fastq. To convert .fastq to .fasta as well, switch FASTA to TRUE; to extract .fastq only from .fast5 files with quality greater or equal than Minquality, increase the Minquality parameter; to allow support for multi-read .fast5 files, switch MultiRead to TRUE.
+
 
 ```
 
@@ -178,7 +180,7 @@ List<-NanoPrepareG(BasecalledFast5=FALSE,Data="/data/basecalled/ExperimentName/F
 
 Table<-NanoTableG(NanoPrepareGList=List,DataOut="/Path/To/DataOut",GCC=TRUE) # extract metadata: if encounter problems with GC content, set GCC to FALSE
 
-NanoStatsG(NanoPrepareGList=List,NanoGTable=Table,DataOut="Path/To/DataOut") #plot statistics
+NanoStatsG(NanoPrepareGList=List,NanoGTable=Table,DataOut="Path/To/DataOut", KeepGGObj = FALSE) #plot statistics
 
 FastqFilterG(Data="/data/basecalled/ExperimentName/FlowCellId",DataOut="/Path/To/DataOut",FASTQTOT=FALSE,FASTA=TRUE,Cores=6,Label="Exp") # filter .fastq files. You can return a concatenated .fastq file too setting the "FASTQTOT" parameter to TRUE
 
