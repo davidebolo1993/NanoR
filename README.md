@@ -152,16 +152,16 @@ Here is an example of how to run the aforementioned commands:
 
 
 
-### MinION and GridION X5 basecalled .fast5 files, single/multi-read
+### MinION and GridION X5 basecalled .fast5 files, single/multi-read (M version)
 
 ```R
 
 
 List<-NanoPrepareM(DataPass="/Path/To/PassedFast5Files",DataFail=NA,DataSkip=NA,Label="Exp", MultiRead=FALSE) # prepare data. To allow multi-read .fast5 files support simply switch MultiRead to TRUE
 
-Table<-NanoTableM(NanoPrepareMList=List,DataOut="/Path/To/DataOut",Cores=6,GCC=FALSE) # extract metadata. To allow GC content computation, switch GCC to TRUE
+Table<-NanoTableM(NanoMList=List,DataOut="/Path/To/DataOut",Cores=6,GCC=FALSE) # extract metadata. To allow GC content computation, switch GCC to TRUE
 
-NanoStatsM(NanoPrepareMList=List,NanoMTable=Table,DataOut="/Path/To/DataOut", KeepGGObj = FALSE) #plot statistics. To store table behind ggplot2-plots, switch KeepGGObj to TRUE
+NanoStatsM(NanoMList=List,NanoMTable=Table,DataOut="/Path/To/DataOut", KeepGGObj = FALSE) #plot statistics. To store table behind ggplot2-plots, switch KeepGGObj to TRUE
 
 NanoFastqM(DataPass="/Path/To/PassedFast5Files",DataOut="/Path/To/DataOut",Label="Exp",Cores=6,FASTA=FALSE, Minquality=7, MultiRead=FALSE) # extract .fastq. To convert .fastq to .fasta as well, switch FASTA to TRUE; to extract .fastq only from .fast5 files with quality greater or equal than Minquality, increase the Minquality parameter; to allow support for multi-read .fast5 files, switch MultiRead to TRUE.
 
@@ -172,23 +172,8 @@ If working with folders containing passed, failed and skipped .fast5 files toget
 
 
 
-### GridION X5 data analysis (if working with sequencing summary and .fastq files)
 
-```R
-
-List<-NanoPrepareG(BasecalledFast5=FALSE,Data="/data/basecalled/ExperimentName/FlowCellId",DataSkip="/data/reads/[FlowCellId]/[ExperimentId]/fast5/",Cores=6, Label="Exp") # prepare data. Dataskip can be omitted
-
-Table<-NanoTableG(NanoPrepareGList=List,DataOut="/Path/To/DataOut",GCC=TRUE) # extract metadata: if encounter problems with GC content, set GCC to FALSE
-
-NanoStatsG(NanoPrepareGList=List,NanoGTable=Table,DataOut="Path/To/DataOut", KeepGGObj = FALSE) #plot statistics
-
-FastqFilterG(Data="/data/basecalled/ExperimentName/FlowCellId",DataOut="/Path/To/DataOut",FASTQTOT=FALSE,FASTA=TRUE,Cores=6,Label="Exp") # filter .fastq files. You can return a concatenated .fastq file too setting the "FASTQTOT" parameter to TRUE
-
-```
-
-
-
-### GridION X5 data analysis (if working with basecalled .fast5 files)
+###  MinION and GridION X5 sequencing summary and .fastq files (G version)
 
 ```R
 
