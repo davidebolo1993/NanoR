@@ -1,1 +1,0 @@
-In this folder you can access all the plots returned by the last version of NanoR
