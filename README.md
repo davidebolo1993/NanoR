@@ -10,14 +10,14 @@ NanoR is submitted to a scientific journal.
 
 ##### NanoR v 2.0 is out !
 
-Added support for multi-read .fast5 files
-Changed graphics design: NanoR goes minimal !
-Plotting is now faster
-NanoCompare is now faster (and histograms are not plotted anymore)
-The "M" version of NanoR now supports analysis of basecalled .fast5 files for MinION and GridION while the "G" version now supports analysis of sequencing summaries and .fastq files
-Added the possibility to extract/filter .fastq files on quality
-Added the possibility to store tables behind ggplot2-plots (easier to hack colors ;))
-Removed seqinr dependency
+- Added support for multi-read .fast5 files
+- Changed graphics design: NanoR goes minimal !
+- Plotting is now faster
+- NanoCompare is now faster (and histograms are not plotted anymore)
+- The "M" version of NanoR now supports analysis of basecalled .fast5 files for MinION and GridION while the "G" version now supports analysis of sequencing summaries and .fastq files
+- Added the possibility to extract/filter .fastq files on quality
+- Added the possibility to store tables behind ggplot2-plots (easier to hack colors ;))
+- Removed seqinr dependency
 
 
 ## Background
