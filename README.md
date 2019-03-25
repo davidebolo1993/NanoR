@@ -220,5 +220,4 @@ NanoCompare(DataIn=DataIn,DataOut="Path/To/DataOut",Labels=Labels) #compare
 
 ```
 
-
-![alt text](Plots/Violins.png)
+NanoCompare return a Violins.pdf plot that compare reads number, base pairs number, reads length and reas quality every 10 hours of experimental run
