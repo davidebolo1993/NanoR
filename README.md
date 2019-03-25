@@ -183,7 +183,7 @@ Table<-NanoTableG(NanoGList=List,DataOut="/Path/To/DataOut",GCC=FALSE) #arrange 
 
 NanoStatsG(NanoGList=List,NanoGTable=Table,DataOut="/Path/To/DataOut", KeepGGObj = FALSE) # plot statistics.  To store table behind ggplot2-plots, switch KeepGGObj to TRUE
 
-NanoFastqG(DataSummary="/Path/To/DataSummary", DataFastq="/Path/To/DataFastq", Cores = 1,FASTA=FALSE, Label="Exp", Minquality = 7) #filter .fastq file on a minimum quality defined in Minquality. To filter .fastq files on higher quality, increas Minquality treshold; to convert .fastq to .fasta, switch FASTA to TRUE.
+NanoFastqG(DataSummary="/Path/To/DataSummary", DataFastq="/Path/To/DataFastq", Cores = 1,FASTA=FALSE, Label="Exp", Minquality = 7) #filter .fastq file on a minimum quality defined in Minquality. To filter .fastq files on higher quality, increase Minquality treshold; to convert .fastq to .fasta as well, switch FASTA to TRUE.
 
 ```
 
