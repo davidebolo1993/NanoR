@@ -22,7 +22,7 @@ NanoR is submitted to a scientific journal.
 
 ## Background
 
-NanoR was developed under R 3.1.3 and tested on Unix, MacOSX and Windows. It supports all the releases of MinION and GridION X5 instruments (and their output, of course !)
+NanoR was developed under R 3.1.3 and tested on Unix, MacOSX and Windows. It supports all the releases of MinION and GridION X5 instruments (and their outputs, of course !)
 
 
 NanoR depends on the following R packages:
