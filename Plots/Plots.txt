@@ -1,2 +1,1 @@
-In this folder you can access all the plots returned by NanoR
-At the moment, we are changing some labels in the plot and they will be uploaded again soon.
+In this folder you can access all the plots returned by the last version of NanoR
