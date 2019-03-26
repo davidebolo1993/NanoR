@@ -4,7 +4,7 @@
 
 NanoR is an up-to-date package for the statistical language and environment R, tested on Unix, MacOSX and Windows, that allows user-friendly analysis and comparison of 1D MinION and GridION X5 sequencing data within acceptable time frames.
 
-NanoR on bioRxiv: 'NanoR: An user-friendly R package to analyze and compare nanopore sequencing data' (doi: https://doi.org/10.1101/514232).
+NanoR on bioRxiv: 'NanoR: a user-friendly R package to analyze and compare nanopore sequencing data' (doi: https://doi.org/10.1101/514232).
 
 NanoR is submitted to a scientific journal.
 
@@ -14,8 +14,8 @@ NanoR is submitted to a scientific journal.
 - Changed graphics design: NanoR goes minimal !
 - Plotting is now faster
 - NanoCompare is now faster (and histograms are not plotted anymore)
-- The "M" version of NanoR now supports analysis of basecalled .fast5 files for MinION and GridION while the "G" version now supports analysis of sequencing summaries and .fastq files
-- Added the possibility to extract/filter .fastq files on quality
+- The "M" version of NanoR now supports analysis of basecalled .fast5 files from MinION and GridION while the "G" version now supports analysis of sequencing summaries and .fastq files from the 2 platforms
+- Added the possibility to extract/filter .fastq files on a minimum quality treshold
 - Added the possibility to store tables behind ggplot2-plots (easier to hack colors ;))
 - Removed seqinr dependency
 
@@ -183,7 +183,7 @@ Table<-NanoTableG(NanoGList=List,DataOut="/Path/To/DataOut",GCC=FALSE) #arrange 
 
 NanoStatsG(NanoGList=List,NanoGTable=Table,DataOut="/Path/To/DataOut", KeepGGObj = FALSE) # plot statistics.  To store table behind ggplot2-plots, switch KeepGGObj to TRUE
 
-NanoFastqG(DataSummary="/Path/To/DataSummary", DataFastq="/Path/To/DataFastq", Cores = 1,FASTA=FALSE, Label="Exp", Minquality = 7) #filter .fastq file on a minimum quality defined in Minquality. To filter .fastq files on higher quality, increase Minquality treshold; to convert .fastq to .fasta as well, switch FASTA to TRUE.
+NanoFastqG(DataSummary="/Path/To/DataSummary", DataFastq="/Path/To/DataFastq", Cores = 1, Label="Exp", FASTA=FALSE, Minquality = 7) #filter .fastq file on a minimum quality defined in Minquality. To filter .fastq files on higher quality, increase Minquality treshold; to convert .fastq to .fasta as well, switch FASTA to TRUE.Using multiple cores is only useful when dealing with multiple sequencing summary files (old behaviour of GridION X5)
 
 ```
 
@@ -216,4 +216,4 @@ NanoCompare(DataIn=DataIn,DataOut="Path/To/DataOut",Labels=Labels) #compare
 
 ```
 
-NanoCompare returns a Violins.pdf plot that compare reads number, base pairs number, reads length and reas quality every 10 hours of experimental run
+NanoCompare returns a Violins.pdf plot that compare reads number, base pairs number, reads length and reas quality every 10 hours of experimental run (maximum 80 hours of experimental run)
