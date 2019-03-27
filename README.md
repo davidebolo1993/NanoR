@@ -183,7 +183,7 @@ Table<-NanoTableG(NanoGList=List,DataOut="/Path/To/DataOut",GCC=FALSE) #arrange 
 
 NanoStatsG(NanoGList=List,NanoGTable=Table,DataOut="/Path/To/DataOut", KeepGGObj = FALSE) # plot statistics.  To store table behind ggplot2-plots, switch KeepGGObj to TRUE
 
-NanoFastqG(DataSummary="/Path/To/DataSummary", DataFastq="/Path/To/DataFastq", Cores = 1, Label="Exp", FASTA=FALSE, Minquality = 7) #filter .fastq file on a minimum quality defined in Minquality. To filter .fastq files on higher quality, increase Minquality treshold; to convert .fastq to .fasta as well, switch FASTA to TRUE.Using multiple cores is only useful when dealing with multiple sequencing summary files (old behaviour of GridION X5)
+NanoFastqG(DataSummary="/Path/To/DataSummary", DataFastq="/Path/To/DataFastq", DataOut="/Path/To/DataOut", Cores = 1, Label="Exp", FASTA=FALSE, Minquality = 7) #filter .fastq file on a minimum quality defined in Minquality. To filter .fastq files on higher quality, increase Minquality treshold; to convert .fastq to .fasta as well, switch FASTA to TRUE.Using multiple cores is only useful when dealing with multiple sequencing summary files (old behaviour of GridION X5)
 
 ```
 
