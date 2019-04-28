@@ -6,7 +6,7 @@ NanoR is an up-to-date package for the statistical language and environment R, t
 
 NanoR on bioRxiv: 'NanoR: a user-friendly R package to analyze and compare nanopore sequencing data' (doi: https://doi.org/10.1101/514232).
 
-NanoR is submitted to a scientific journal.
+NanoR has been accepted for publication in PLOS One. 
 
 ##### NanoR v 2.0 is out !
 
