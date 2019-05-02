@@ -103,7 +103,8 @@ If you're using NanoR on Windows, be sure to specify paths using the following f
 
 _"C:\\\Path\\\To\\\Data"_
 
-Use NanoR on the complete set of .fast5 files you obtain from Nanopore MinION/GridION X5 in order to obtain significant statistics. A MinION and GridION X5 sample dataset on which NanoR can be tested is available to be downloaded at _https://faspex.embl.de/aspera/faspex/external_deliveries/823?passcode=c4aa66d379850be32163f8517fa04750aec7a3bf&expiration=MjAxOS0wNS0wMlQwNjo1Nzo0MFo=_. Get in touch with me if the link does not work anymore.
+Use NanoR on the complete set of .fast5 files you obtain from Nanopore MinION/GridION X5 in order to obtain significant statistics. A MinION and GridION X5 sample dataset on which NanoR can be tested is available to be downloaded at _https://faspex.embl.de/aspera/faspex/external_deliveries/823?passcode=c4aa66d379850be32163f8517fa04750aec7a3bf&expiration=MjAxOS0wNS0wMlQwNjo1Nzo0MFo=_. If the first link does not work, a more stable one is:
+_https://oc.embl.de/index.php/s/JraNyCrcJhStcNB_. Get in touch with me if these links do not work anymore.
 
 
 
