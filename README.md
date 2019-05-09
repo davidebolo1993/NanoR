@@ -5,7 +5,11 @@
 NanoR is an up-to-date package for the statistical language and environment R, tested on Unix, MacOSX and Windows, that allows user-friendly analysis and comparison of 1D MinION and GridION X5 sequencing data within acceptable time frames.
 
 
-If you are using NanoR, please consider citing "NanoR: A user-friendly R package to analyze and compare nanopore sequencing data" published in PLOS ONE (" https://doi.org/10.1371/journal.pone.0216471")
+If you are using NanoR, please consider citing "NanoR: A user-friendly R package to analyze and compare nanopore sequencing data" published in PLOS ONE.
+
+#### Citation:
+
+Bolognini D, Bartalucci N, Mingrino A, Vannucchi AM, Magi A (2019) NanoR: A user-friendly R package to analyze and compare nanopore sequencing data. PLoS ONE 14(5): e0216471. https://doi.org/10.1371/journal.pone.0216471)
 
 
 ##### NanoR v 2.0 is out !
