@@ -49,7 +49,7 @@ In order to install the needed packages, you can copy, paste and run the followi
 
 ```R
 
-install.packages(c("ggplot2","reshape2","RColorBrewer","scales","gridExtra"), repos= "http://cran.cnr.berkeley.edu/")
+install.packages(c("ggplot2","reshape2","ShortRead","RColorBrewer","scales","gridExtra"), repos= "http://cran.cnr.berkeley.edu/")
  
 source("http://bioconductor.org/biocLite.R")
 
