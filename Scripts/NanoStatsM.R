@@ -624,7 +624,7 @@ NanoStatsM<-function(NanoMList,NanoMTable,DataOut, KeepGGObj=FALSE) {
   Failed_rat<-((List.Files.HDF5_Fail_Length+List.Files.HDF5_Skip_Length)/(List.Files.HDF5_Pass.length+List.Files.HDF5_Fail_Length+List.Files.HDF5_Skip_Length))
 
 
-  dfval <- rbind(Label, Longest,Shortest,MeanDim,MedianDim,HQ, LQ, MeanQ, MedianQ, Cumulative_Basepairs[length(Cumulative_Basepairs)],Passed_num, Failed_num, Passed_rat, Failed_rat)
+  dfval <- rbind(label, Longest,Shortest,MeanDim,MedianDim,HQ, LQ, MeanQ, MedianQ, Cumulative_Basepairs[length(Cumulative_Basepairs)],Passed_num, Failed_num, Passed_rat, Failed_rat)
   rownames(dfval) <- c('Sample','Longest sequence (bps)', 'Shortest sequence (bps)', 'Mean length (bps)', 'Median length (bps)', 'Highest quality sequence (phred)', 'Lowest quality sequence (phred)', 'Mean quality (phred)', 'Median quality (phred)', 'Passed reads throughput (bps)', '# passed reads', '# failed/skipped reads', 'Ratio passed', 'Ratio failed/skipped')
 
 
