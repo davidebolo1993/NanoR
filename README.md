@@ -100,6 +100,7 @@ Then, from your R console:
 ```R
 
 install.packages("/Path/To/NanoR.tar.gz", repos=NULL)
+library(NanoR)
 
 ```
 
