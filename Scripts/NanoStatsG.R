@@ -98,7 +98,7 @@ NanoStatsG<-function(NanoGList,NanoGTable,DataOut,KeepGGObj=FALSE) {
   
   NanoTable2<-NanoGTable[Really_Pass_File,]
   
-  write.table(NanoTable2, file.path(Directory, 'metadata.fltrd.txt'), col.names=T, row.names=F, quote=F, sep="\t")
+  write.table(NanoTable2, 'metadata.fltrd.txt', col.names=T, row.names=F, quote=F, sep="\t")
    
   Table_HDF5_Def<-NanoTable2[,1:6]   
   Time_2<-as.numeric(Table_HDF5_Def[,4])

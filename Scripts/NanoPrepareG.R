@@ -80,15 +80,15 @@ NanoPrepareG<-function(DataSummary, DataFastq, Cores=1,Label) {
 
     Table<-read.table(File,header=FALSE,sep="\t",skip=1)
 
-    RealativeTimeToAdd<-(as.numeric(Table[,11])+as.numeric(Table[,13]))## calculate a relative time that will be rescaled
+    RealativeTimeToAdd<-(as.numeric(Table[,10])+as.numeric(Table[,12]))## calculate a relative time that will be rescaled
     #SummaryTable<-cbind(Table,RealativeTimeToAdd)
     #Flowcell_ID_Label<-unlist(strsplit(as.character(Table[,1]),"_"))[4]
     #Flowcell_ID<-rep(Flowcell_ID_Label,dim(Table)[1])
-    Read_Id<-as.character(Table[,3])
-    Channel<-as.numeric(Table[,5])
-    Mux<-as.numeric(Table[,6])    
-    Length<-as.numeric(Table[,14])
-    Qscore<-as.numeric(Table[,15])
+    Read_Id<-as.character(Table[,2])
+    Channel<-as.numeric(Table[,4])
+    Mux<-as.numeric(Table[,5])    
+    Length<-as.numeric(Table[,13])
+    Qscore<-as.numeric(Table[,14])
     #Relative_Time<-as.numeric(SummaryTable[,14])
     Table<-cbind(Read_Id,Channel,Mux,RealativeTimeToAdd,Length,Qscore)
     return(Table)
