@@ -18,15 +18,16 @@
 
 NanoPrepareG<-function(DataSummary,DataFastq) {
 
-  List<-list()
+  library(data.table)
 
+  List<-list()
   FastqFiles<-list.files(DataFastq,pattern=".fastq",full.names=TRUE, recursive=TRUE)
   message('Passed FASTQ: ', length(FastqFiles))
 
 
   Read_Table_Summary<-function(File) {
 
-    Table<-read.table(File,header=TRUE,sep="\t")
+    Table<-fread(File,header=TRUE,sep="\t")
     RealativeTimeToAdd<-(as.numeric(Table$template_start)+as.numeric(Table$template_duration))
     Read_Id<-as.character(Table$read_id)
     Channel<-as.numeric(Table$channel)
