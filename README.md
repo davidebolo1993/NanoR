@@ -6,7 +6,7 @@
 
 NanoR is available to be installed from source. Please have a look at [NanoR documentation](https://davidebolo1993.github.io/nanordoc/) for any installation or usage questions.
 
-[Source Code](https://github.com/davidebolo1993/NanoR/tree/master/NanoR)
+[Source Code](https://github.com/davidebolo1993/NanoR/tree/master/src)
 
 [Documentation](https://davidebolo1993.github.io/nanordoc/)
 
