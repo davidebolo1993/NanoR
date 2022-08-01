@@ -1,0 +1,13 @@
+year <- "2019"
+note <- sprintf("R package version 4.0")
+
+bibentry(bibtype = "article",
+         title = "NanoR: A user-friendly R package to analyze and compare nanopore sequencing data",
+         author = c(person("Davide", "Bolognini"),
+                    person("Niccolò", "Bartalucci"),
+                    person("Alessandra", "Mingrino"),
+                    person("Alessandro", "Maria Vannucchi"),
+                    person("Alberto", "Magi")),
+	 journal="PLOS ONE",
+         year = year,
+         note = note)

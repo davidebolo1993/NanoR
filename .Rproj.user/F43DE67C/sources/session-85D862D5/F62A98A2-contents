@@ -1,0 +1,16 @@
+Package: NanoR
+Type: Package
+Title: Analyze MinION and GridION sequencing data
+Version: 4.0
+Author: Davide Bolognini, PhD [aut, cre]
+Maintainer: Davide Bolognini <davidebolognini7@gmail.com>
+Depends:
+    R (>= 4.0.0),
+    plotly (>= 4.9.4.1),
+    scales (>= 1.1.1),
+    data.table (>= 1.14.0),
+    dplyr (>= 1.0.7),
+    tidyr (>= 1.1.3)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.1
