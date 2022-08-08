@@ -16,7 +16,7 @@ muxscan<-function(muxdata,out) {
 
 	message("[",Sys.time(),"]"," reading mux scan data")
 
-	csv<-fread(muxdata, sep=",", header=TRUE, select=c("mux_scan_assessment", "repeat"), showProgress=FALSE)
+	csv<-fread(muxdata, sep=",", header=TRUE, select=c("mux_scan_assessment", "scan_number"), showProgress=FALSE)
 	colnames(csv)<-c("A", "B")
 
 	message("[",Sys.time(),"]"," calculating stats")

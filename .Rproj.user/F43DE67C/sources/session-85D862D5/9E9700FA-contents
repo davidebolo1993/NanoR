@@ -1,8 +1,0 @@
-library(NanoR)
-
-summary1<-file.path("/Users/davide.bolognini/NanoR/data/sample_summary_1.tsv")
-summary2<-file.path("/Users/davide.bolognini/NanoR/data/sample_summary_2.tsv")
-muxdata<-file.path("/Users/davide.bolognini/NanoR/data/sample_mux.csv")
-
-out5<-file.path("/Users/davide.bolognini/heatmap_1.NanoR.html")
-NanoR::heatmap(summary=summary1, time=1, out=out5, platform = "minion") 
