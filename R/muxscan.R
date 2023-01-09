@@ -1,5 +1,5 @@
 #' @title muxscan
-#' @description generate an interactive HTML report with muxes status over time 
+#' @description generate an interactive HTML report with muxes status over time
 #' @param muxdata path to a mux scan data file from a single ONT run
 #' @param out path to HTML report
 #' @return HTML file
@@ -24,10 +24,21 @@ muxscan<-function(muxdata,out) {
 	csv<-as.data.frame(csv %>% group_by(B) %>% count(B, A))
 	csv<-as.data.frame(complete(csv,B,A))
 	csv[is.na(csv)] <- 0
-	csv<-unstack(form=n ~ A, x=csv)
+
+	if (length(unique(csv$B)) == 1) {
+
+	  fakedt<-csv
+	  fakedt$B<-2
+	  csv<-rbind(csv,fakedt)
+	  csv<-unstack(form=n ~ A, x=csv)[1,]
+
+	} else {
+
+	  csv<-unstack(form=n ~ A, x=csv)
+	}
+
 	csv<-setDT(csv, keep.rownames = TRUE)[]
 	csv$rn<-factor(csv$rn, levels=as.character(csv$rn))
-
 
 	f <- list(
 		size = 10,
@@ -38,7 +49,13 @@ muxscan<-function(muxdata,out) {
 
 	fig <- plot_ly(csv, x = ~rn, y = ~single_pore, type = "bar", name = "single_pore")
 	fig <- fig %>% add_trace(y = ~saturated, name = "saturated")
-	fig <- fig %>% add_trace(y = ~multiple, name = "multiple")
+
+	if ("multiple" %in% colnames(csv)) {
+
+	  fig <- fig %>% add_trace(y = ~multiple, name = "multiple")
+
+	}
+
 	fig <- fig %>% add_trace(y = ~other, name = "other")
 	fig <- fig %>% add_trace(y = ~zero, name = "zero")
 	fig <- fig %>% add_trace(y = ~unavailable, name = "unavailable")

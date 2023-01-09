@@ -113,23 +113,23 @@ heatmap<-function(summary,time=1,platform="minion",out) {
 
 	channels_activity_overtime<-channels_activity_overtime_pass<-matrix(0,ncol=n_channels, nrow=length(bins)-1)
 	channels_activity<-channels_activity_pass<-rep(0,n_channels)
-
+	
 	for (i in c(1:n_channels)) {
-
-		subtab<-subset(tab, (tab$channel == i))
+		
+		subtab<-tab[channel==i]
 		channels_activity[i]<-sum(subtab$sequence_length_template)
-		channels_activity_pass[i]<-sum(subset(subtab, (subtab$passes_filtering == TRUE))$sequence_length_template)
-
+		channels_activity_pass[i]<-sum(subtab[passes_filtering == TRUE]$sequence_length_template)
+		
 		for (l in c(1:(length(bins)-1))) {
-
-			from<-bins[l]
-			to<-bins[l+1]
-			subsubtab<-subset(subtab, (subtab$template_unix > from & subtab$template_unix <= to))
-			channels_activity_overtime[l,i]<-sum(subsubtab$sequence_length_template)
-			channels_activity_overtime_pass[l,i]<-sum(subset(subsubtab, (subsubtab$passes_filtering == TRUE))$sequence_length_template)
-			
+		
+		from<-bins[l]
+		to<-bins[l+1]
+		subsubtab<-subtab[template_unix > from & template_unix <= to]
+		channels_activity_overtime[l,i]<-sum(subsubtab$sequence_length_template)
+		channels_activity_overtime_pass[l,i]<-sum(subsubtab[passes_filtering == TRUE]$sequence_length_template)
+		
 		}
-
+		
 	}
 
 	channels_activity_labels<-matrix("0",nrow=max(layout$row),ncol=max(layout$col))
