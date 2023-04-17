@@ -4,10 +4,12 @@
 \alias{compare}
 \title{compare}
 \usage{
-compare(summaries, time = 10, out)
+compare(summaries, labels = NULL, time = 10, out)
 }
 \arguments{
 \item{summaries}{a character vector containing paths to multiple sequencing summaries (each from a different ONT sequencing run)}
+
+\item{labels}{a character vector containing ordered names for the sequencing files. Override the default behaviour, which is to use the run_id}
 
 \item{time}{compare run statistics using this time interval (hours). Default to 10}
 
@@ -24,5 +26,5 @@ generate an interactive HTML report comparing length and quality of reads from m
 exp1<-file.path("/path/to/exp1_sequencing_summary.txt")
 exp2<-file.path("/path/to/exp2_sequencing_summary.txt")
 outhtml<-file.path("/path/to/comparison.html")
-NanoR::compare(summaries=c(exp1,exp2), fraction=.001, out=outhtml)
+NanoR::compare(summaries=c(exp1,exp2), time=10, out=outhtml)
 }

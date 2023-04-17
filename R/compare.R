@@ -1,6 +1,7 @@
 #' @title compare
 #' @description generate an interactive HTML report comparing length and quality of reads from multiple sequencing summary files
 #' @param summaries a character vector containing paths to multiple sequencing summaries (each from a different ONT sequencing run)
+#' @param labels a character vector containing ordered names for the sequencing files. Override the default behaviour, which is to use the run_id
 #' @param time compare run statistics using this time interval (hours). Default to 10
 #' @param out path to HTML report
 #' @return HTML file
@@ -9,10 +10,10 @@
 #' exp1<-file.path("/path/to/exp1_sequencing_summary.txt")
 #' exp2<-file.path("/path/to/exp2_sequencing_summary.txt")
 #' outhtml<-file.path("/path/to/comparison.html")
-#' NanoR::compare(summaries=c(exp1,exp2), fraction=.001, out=outhtml)
+#' NanoR::compare(summaries=c(exp1,exp2), time=10, out=outhtml)
 
 
-compare<-function(summaries,time=10,out){
+compare<-function(summaries,labels=NULL,time=10,out){
 
 
 	out<-file.path(out)
@@ -24,14 +25,26 @@ compare<-function(summaries,time=10,out){
 	for (i in c(1:(length(compare_)-1))) {
 
 		h<-seq(from=compare_[i], to=compare_[i+1], by=1)
-		
+
 		for (n in h) {
 
 			clist[[as.character(n)]]<-paste(h[1], h[length(h)],sep="-")
-		
+
 		}
 	}
 
+
+	if (!is.null(labels)) {
+
+	  if (length(labels) != length(summaries)) {
+
+	    stop("[",Sys.time(),"]"," length of summaries and labels vector must be the same")
+
+	  }
+
+	}
+
+	l<-1
 
 	for (summary in summaries) {
 
@@ -40,7 +53,8 @@ compare<-function(summaries,time=10,out){
 		message("[",Sys.time(),"]"," reading sequencing summary file ", summary)
 
 		tab<-fread(summary,sep="\t",header=TRUE,showProgress=FALSE)
-		run<-unique(tab$run_id)
+		run<-ifelse(is.null(labels), unique(tab$run_id),labels[l])
+		l<-l+1
 
 		if (length(run) != 1) {
 
@@ -67,7 +81,7 @@ compare<-function(summaries,time=10,out){
 			range_<-clist[[as.character(from)]]
 
 			summ[i,]$x<-summ_pass[i,]$x<-range_
-			
+
 			summ[i,]$y<-nrow(subtab)
 			summ_pass[i,]$y<-nrow(subset(subtab, (subtab$passes_filtering == TRUE)))
 
@@ -91,7 +105,7 @@ compare<-function(summaries,time=10,out){
 		taball_pass[[run]]<-summ_pass
 
 	}
-	
+
 	taball<-do.call(rbind, taball)
 	taball_pass<-do.call(rbind,taball_pass)
 
@@ -124,22 +138,22 @@ compare<-function(summaries,time=10,out){
 
 
 	p1 <- plot_ly() %>% add_trace(x = taball$x, y = taball$y, color = taball$z, type = "box", visible=TRUE,legendgroup = taball$z,showlegend=F) %>%
-		add_trace(x=taball_pass$x,y=taball_pass$y,color = taball_pass$z, type = "box", visible=FALSE,legendgroup = taball_pass$z,showlegend=F) %>% 
-		layout(boxmode = "group",legend = list(orientation = 'h'),updatemenus = list(chart_type), xaxis=list(title="Sequencing run-time (h)",titlefont=f,tickangle=45), 
+		add_trace(x=taball_pass$x,y=taball_pass$y,color = taball_pass$z, type = "box", visible=FALSE,legendgroup = taball_pass$z,showlegend=F) %>%
+		layout(boxmode = "group",legend = list(orientation = 'h'),updatemenus = list(chart_type), xaxis=list(title="Sequencing run-time (h)",titlefont=f,tickangle=45),
 			yaxis=list(side="left",title="#reads",titlefont=f))
 
 	p2 <- plot_ly() %>% add_trace(x = taball$x, y = taball$y2, color = taball$z, type = "box", visible=TRUE,legendgroup = taball$z,showlegend=F) %>%
-		add_trace(x=taball_pass$x,y=taball_pass$y2,color = taball_pass$z, type = "box", visible=FALSE,legendgroup=taball_pass$z,showlegend=F) %>% 
+		add_trace(x=taball_pass$x,y=taball_pass$y2,color = taball_pass$z, type = "box", visible=FALSE,legendgroup=taball_pass$z,showlegend=F) %>%
 		layout(boxmode = "group",legend = list(orientation = 'h'),updatemenus = list(chart_type), xaxis=list(title="Sequencing run-time (h)",titlefont=f,tickangle=45),
 			yaxis=list(side="left",title="#bases",titlefont=f))
 
 	p3 <- plot_ly() %>% add_trace(x = taball$x, y = taball$y3, color = taball$z, type = "box", visible=TRUE,legendgroup = taball$z,showlegend=F) %>%
-		add_trace(x=taball_pass$x,y=taball_pass$y3,color = taball_pass$z, type = "box", visible=FALSE,legendgroup=taball_pass$z,showlegend=F) %>% 
+		add_trace(x=taball_pass$x,y=taball_pass$y3,color = taball_pass$z, type = "box", visible=FALSE,legendgroup=taball_pass$z,showlegend=F) %>%
 		layout(boxmode = "group",legend = list(orientation = 'h'),updatemenus = list(chart_type), xaxis=list(title="Sequencing run-time (h)",titlefont=f,tickangle=45),
 			yaxis=list(side="left",title="Length",titlefont=f))
 
 	p4<- plot_ly() %>% add_trace(x = taball$x, y = taball$y4, color = taball$z, type = "box", visible=TRUE,legendgroup = taball$z) %>%
-		add_trace(x=taball_pass$x,y=taball_pass$y4,color = taball_pass$z, type = "box", visible=FALSE, legendgroup=taball_pass$z) %>% 
+		add_trace(x=taball_pass$x,y=taball_pass$y4,color = taball_pass$z, type = "box", visible=FALSE, legendgroup=taball_pass$z) %>%
 		layout(boxmode = "group",legend = list(orientation = 'h'),updatemenus = list(chart_type), xaxis=list(title="Sequencing run-time (h)",titlefont=f,tickangle=45),
 			yaxis=list(side="left",title="Qscore",titlefont=f))
 
