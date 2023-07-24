@@ -1,6 +1,6 @@
 #' @title alfredstats
 #' @description generate an interactive HTML report with statistics from alfred qc (zgrep "^ME <qc.tsv.gz> | cut -f 2- | datamash transpose)
-#' @param qcdata path to alfred qc.tsv.gz 
+#' @param qcdata path to alfred qc.tsv.gz
 #' @param out path to HTML report
 #' @return HTML file
 #' @examples
@@ -27,7 +27,7 @@ alfredstats<-function(qcdata,out) {
 			"ErrorRate")
 
 	error_df<- df[which(df$Sample %in% keep),]
-	error_df[match(keep, error_df$Sample),]
+	error_df<-error_df[match(keep, error_df$Sample),]
 
 	error_df<-transpose(error_df)
 	names(error_df) <- as.character(unlist(error_df[1,]))
@@ -37,15 +37,15 @@ alfredstats<-function(qcdata,out) {
 	colnames(error_df)<-c(colnames(error_df)[c(1:length(colnames(error_df))-1)], c("#TotalErrors"))
 	cols<-colnames(error_df)
 	error_df<-transpose(error_df)
-	error_df$V2<-error_df$V1
-	error_df$V1<-cols
+  colnames(error_df)<-colnames(df)[c(2:ncol(df))]
+  error_df$V0<-cols
 
 	#counts
-	error_counts_df<-error_df[grepl("#", error_df$V1),]
-	error_counts_df$V1<-factor(error_counts_df$V1, levels=as.character(error_counts_df$V1))
+	error_counts_df<-error_df[grepl("#", error_df$V0),]
+	error_counts_df$V0<-factor(error_counts_df$V0, levels=as.character(error_counts_df$V0))
 	#rates
-	error_rates_df<-error_df[!grepl("#", error_df$V1),]
-	error_rates_df$V1<-factor(error_rates_df$V1, levels=as.character(error_rates_df$V1))
+	error_rates_df<-error_df[!grepl("#", error_df$V0),]
+	error_rates_df$V0<-factor(error_rates_df$V0, levels=as.character(error_rates_df$V0))
 
 
 	#aligned reads
@@ -56,18 +56,19 @@ alfredstats<-function(qcdata,out) {
 			"#MappedReverse", "MappedReverseFraction",
 			"#SecondaryAlignments", "SecondaryAlignmentFraction",
 			"#SupplementaryAlignments", "SupplementaryAlignmentFraction",
-			"#SplicedAlignments", "SplicedAlignmentFraction"            
+			"#SplicedAlignments", "SplicedAlignmentFraction"
 			)
 
 	alignment_df<-df[which(df$Sample %in% keep),]
-	colnames(alignment_df)<-c("V1", "V2")
+	colnames(alignment_df)[1]<-c("V0")
+	alignment_df<-alignment_df %>% dplyr::relocate(V0, .after = last_col())
 
 	#counts
-	alignment_counts_df<-alignment_df[grepl("#", alignment_df$V1),]
-	alignment_counts_df$V1<-factor(alignment_counts_df$V1, levels=as.character(alignment_counts_df$V1))
+	alignment_counts_df<-alignment_df[grepl("#", alignment_df$V0),]
+	alignment_counts_df$V0<-factor(alignment_counts_df$V0, levels=as.character(alignment_counts_df$V0))
 	#rates
-	alignment_rates_df<-alignment_df[!grepl("#", alignment_df$V1),]
-	alignment_rates_df$V1<-factor(alignment_rates_df$V1, levels=as.character(alignment_rates_df$V1))
+	alignment_rates_df<-alignment_df[!grepl("#", alignment_df$V0),]
+	alignment_rates_df$V0<-factor(alignment_rates_df$V0, levels=as.character(alignment_rates_df$V0))
 
 	f <- list(
 		size = 10,
@@ -82,24 +83,48 @@ alfredstats<-function(qcdata,out) {
 		buttons = list(
 		list(label = "counts",
 			method = "restyle",
-			args = list("visible", list(TRUE,FALSE))),
+			args = list("visible", sapply(rep(c(TRUE,FALSE),each=(ncol(error_counts_df)-1)),list))),
 		list(label = "rates",
 			method = "restyle",
-			args = list("visible", list(FALSE,TRUE)))
+			args = list("visible", sapply(rep(c(FALSE,TRUE),each=(ncol(error_counts_df)-1)),list)))
 		)
 	)
 
 	message("[",Sys.time(),"]"," plotting")
 
-	p1<-plot_ly() %>% add_trace(x=error_counts_df$V1,y=as.numeric(error_counts_df$V2),type="bar", color = I("darkblue"), name = "#bp", visible=TRUE) %>%
-					add_trace(x=error_rates_df$V1,y=as.numeric(error_rates_df$V2),type="bar", color = I("darkred"), name = ":bp", visible=FALSE) %>%
-					layout(showlegend=FALSE,updatemenus = list(chart_type))
+	p1<-plot_ly()
 
-	p2<-plot_ly() %>% add_trace(x=alignment_counts_df$V1,y=as.numeric(alignment_counts_df$V2),type="bar", color = I("darkblue"), name = "#reads", visible=TRUE) %>%
-					add_trace(x=alignment_rates_df$V1,y=as.numeric(alignment_rates_df$V2),type="bar", color = I("darkred"), name = ":reads", visible=FALSE) %>%
-					layout(showlegend=FALSE,updatemenus = list(chart_type), title="Alfred statistics")
+	for (n in c(1:(ncol(error_counts_df)-1))) {
 
-	
+	  p1<-p1 %>% add_trace(x=error_counts_df$V0, y=as.numeric(unlist(error_counts_df[,..n])), name = colnames(error_counts_df[,..n]), legendgroup= colnames(error_counts_df[,..n]),type="bar", visible=TRUE)
+
+	}
+
+	for (n in c(1:(ncol(error_rates_df)-1))) {
+
+	  p1<-p1 %>% add_trace(x=error_rates_df$V0, y=as.numeric(unlist(error_rates_df[,..n])), name = colnames(error_rates_df[,..n]), legendgroup= colnames(error_rates_df[,..n]), type="bar", visible=FALSE)
+
+	}
+
+	p1<-p1%>%layout(showlegend=FALSE,updatemenus = list(chart_type),  barmode = 'group')
+
+
+	p2<-plot_ly()
+
+	for (n in c(1:(ncol(alignment_counts_df)-1))) {
+
+	  p2<-p2 %>% add_trace(x=alignment_counts_df$V0, y=as.numeric(unlist(alignment_counts_df[,..n])), name = colnames(alignment_counts_df[,..n]), legendgroup= colnames(alignment_counts_df[,..n]), type="bar", visible=TRUE)
+
+	}
+
+	for (n in c(1:(ncol(alignment_rates_df)-1))) {
+
+	  p2<-p2 %>% add_trace(x=alignment_rates_df$V0, y=as.numeric(unlist(alignment_rates_df[,..n])), name = colnames(alignment_rates_df[,..n]), legendgroup= colnames(alignment_rates_df[,..n]), type="bar", visible=FALSE)
+
+	}
+
+	p2<-p2%>%layout(showlegend=TRUE,updatemenus = list(chart_type),  barmode = 'group')
+
 	fig<- subplot(p1,p2,nrows = 2,titleX=TRUE, titleY=TRUE,margin=.05)
 
 	message("[",Sys.time(),"]"," storing plot to file")

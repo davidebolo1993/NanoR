@@ -22,16 +22,16 @@ heatmap<-function(summary,time=1,platform="minion",out) {
 	getPromethIONChannelMap <- function() {
 
 	chunk <- function(i) {
-		
+
 		m <- matrix(seq_len(250), ncol=10, byrow=TRUE)
 		m + i
-	
+
 	}
-	
+
 	layout <- do.call(cbind, lapply(seq(from=0, to=2750, by=250), chunk))
 	channelMap <- as.data.frame(cbind(channel = as.vector(t(layout)), which(layout == as.vector(layout), arr.ind = TRUE)))
 	return(channelMap)
-	
+
 	}
 
 
@@ -41,7 +41,7 @@ heatmap<-function(summary,time=1,platform="minion",out) {
 		#layout <- layout[rev(seq(10)), ]
 		#channelMap <- as.data.frame(cbind(channel = as.vector(t(layout)), which(layout == as.vector(layout), arr.ind = TRUE)))
 		#return(channelMap)
-	
+
 	#}
 
 
@@ -49,22 +49,22 @@ heatmap<-function(summary,time=1,platform="minion",out) {
 
 		# build the map for R9.4.1 flowcell, as a long-form dataframe
 		blockCalc <- function(i) {
-			
+
 			m <- matrix(seq(i, i + 63, by = 1), ncol = 8, byrow = TRUE)
 			cbind(m[seq(5, 8, by = 1), ], m[seq(4), rev(seq(8))])
-		
+
 		}
-		
+
 		layout <- do.call(rbind, lapply(c(1, 449, 385, 321, 257, 193, 129, 65), blockCalc))
-		
+
 		# transpose the layout for cleaner presentation ...
 		#layout <- t(layout)
 		channelMap <- as.data.frame(cbind(channel = as.vector(t(layout)), which( layout == as.vector(layout), arr.ind = TRUE)))
 		return(channelMap)
-	
+
 	}
 
-	
+
 	summary<-normalizePath(file.path(summary))
 	out<-file.path(out)
 
@@ -113,23 +113,23 @@ heatmap<-function(summary,time=1,platform="minion",out) {
 
 	channels_activity_overtime<-channels_activity_overtime_pass<-matrix(0,ncol=n_channels, nrow=length(bins)-1)
 	channels_activity<-channels_activity_pass<-rep(0,n_channels)
-	
+
 	for (i in c(1:n_channels)) {
-		
+
 		subtab<-tab[channel==i]
 		channels_activity[i]<-sum(subtab$sequence_length_template)
 		channels_activity_pass[i]<-sum(subtab[passes_filtering == TRUE]$sequence_length_template)
-		
+
 		for (l in c(1:(length(bins)-1))) {
-		
+
 		from<-bins[l]
 		to<-bins[l+1]
 		subsubtab<-subtab[template_unix > from & template_unix <= to]
 		channels_activity_overtime[l,i]<-sum(subsubtab$sequence_length_template)
 		channels_activity_overtime_pass[l,i]<-sum(subsubtab[passes_filtering == TRUE]$sequence_length_template)
-		
+
 		}
-		
+
 	}
 
 	channels_activity_labels<-matrix("0",nrow=max(layout$row),ncol=max(layout$col))
@@ -141,8 +141,8 @@ heatmap<-function(summary,time=1,platform="minion",out) {
 		c<-layout$col[m]
 		label<-layout$channel[m]
 		channels_activity_labels[r,c]<-as.character(label)
-		channels_activity_map[r,c]<-channels_activity[m]
-		channels_activity_map_pass[r,c]<-channels_activity_pass[m]
+		channels_activity_map[r,c]<-channels_activity[label]
+		channels_activity_map_pass[r,c]<-channels_activity_pass[label]
 
 	}
 
@@ -183,7 +183,7 @@ heatmap<-function(summary,time=1,platform="minion",out) {
 							showlegend=TRUE,updatemenus = list(chart_type), title="#bp per channel (over time and space)")
 
 	fig<- subplot(p1,p2,nrows = 2,titleX=TRUE, titleY=TRUE,margin=.05)
-	
+
 	message("[",Sys.time(),"]"," storing plot to file")
 
 	htmlwidgets::saveWidget(fig, out)
