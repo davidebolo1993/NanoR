@@ -1,7 +1,7 @@
 Package: NanoR
 Type: Package
 Title: Analyze MinION and GridION sequencing data
-Version: 4.1
+Version: 4.2
 Author: Davide Bolognini, PhD [aut, cre]
 Maintainer: Davide Bolognini <davidebolognini7@gmail.com>
 Depends:

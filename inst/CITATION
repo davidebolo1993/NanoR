@@ -1,5 +1,5 @@
 year <- "2019"
-note <- sprintf("R package version 4.0")
+note <- sprintf("R package version 4.2")
 
 bibentry(bibtype = "article",
          title = "NanoR: A user-friendly R package to analyze and compare nanopore sequencing data",
